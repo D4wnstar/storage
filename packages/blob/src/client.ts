@@ -4,7 +4,7 @@ import type { IncomingMessage } from 'node:http';
 // When bundled via a bundler supporting the `browser` field, then
 // the `undici` module will be replaced with https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
 // for browser contexts. See ./undici-browser.js and ./package.json
-import { fetch } from 'undici';
+import { requestUrl } from 'obsidian';
 import type { BlobCommandOptions } from './helpers';
 import { BlobError, getTokenFromOptionsOrEnv } from './helpers';
 import { createPutMethod } from './put';
@@ -325,7 +325,8 @@ async function retrieveClientToken(options: {
     },
   };
 
-  const res = await fetch(url, {
+  const res = await requestUrl({
+    url,
     method: 'POST',
     body: JSON.stringify(event),
     headers: {
@@ -333,12 +334,12 @@ async function retrieveClientToken(options: {
     },
   });
 
-  if (!res.ok) {
+  if (res.status >= 400) {
     throw new BlobError('Failed to  retrieve the client token');
   }
 
   try {
-    const { clientToken } = (await res.json()) as { clientToken: string };
+    const { clientToken } = (await res.json) as { clientToken: string };
     return clientToken;
   } catch (e) {
     throw new BlobError('Failed to retrieve the client token');

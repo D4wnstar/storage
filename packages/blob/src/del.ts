@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { requestUrl } from 'obsidian';
 import type { BlobCommandOptions } from './helpers';
 import {
   getApiUrl,
@@ -20,7 +20,8 @@ export async function del(
   url: string[] | string,
   options?: BlobCommandOptions,
 ): Promise<void> {
-  const blobApiResponse = await fetch(getApiUrl('/delete'), {
+  const blobApiResponse = await requestUrl({
+    url: getApiUrl('/delete'),
     method: 'POST',
     headers: {
       ...getApiVersionHeader(),
@@ -32,5 +33,5 @@ export async function del(
 
   await validateBlobApiResponse(blobApiResponse);
 
-  (await blobApiResponse.json()) as DeleteBlobApiResponse;
+  (await blobApiResponse.json) as DeleteBlobApiResponse;
 }

@@ -1,7 +1,7 @@
 // common util interface for blob raw commands, not meant to be used directly
 // this is why it's not exported from index/client
 
-import { type Response } from 'undici';
+import type { RequestUrlResponse } from 'obsidian';
 
 export interface BlobCommandOptions {
   /**
@@ -105,13 +105,13 @@ interface BlobApiError {
 }
 
 export async function validateBlobApiResponse(
-  response: Response,
+  response: RequestUrlResponse,
 ): Promise<void> {
-  if (!response.ok) {
+  if (response.status >= 400) {
     let data: unknown;
 
     try {
-      data = await response.json();
+      data = await response.json;
     } catch {
       throw new BlobUnknownError();
     }

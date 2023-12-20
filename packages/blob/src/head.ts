@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { requestUrl } from 'obsidian';
 import type { BlobCommandOptions } from './helpers';
 import {
   getApiUrl,
@@ -35,7 +35,8 @@ export async function head(
   const headApiUrl = new URL(getApiUrl());
   headApiUrl.searchParams.set('url', url);
 
-  const blobApiResponse = await fetch(headApiUrl, {
+  const blobApiResponse = await requestUrl({
+    url: headApiUrl.toString(),
     method: 'GET', // HEAD can't have body as a response, so we use GET
     headers: {
       ...getApiVersionHeader(),
@@ -45,7 +46,7 @@ export async function head(
 
   await validateBlobApiResponse(blobApiResponse);
 
-  const headResult = (await blobApiResponse.json()) as HeadBlobApiResponse;
+  const headResult = (await blobApiResponse.json) as HeadBlobApiResponse;
 
   return mapBlobResult(headResult);
 }

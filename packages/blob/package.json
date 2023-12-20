@@ -59,6 +59,7 @@
     }
   },
   "dependencies": {
+    "obsidian": "1.4.11",
     "undici": "5.28.2"
   },
   "devDependencies": {

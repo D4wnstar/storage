@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { requestUrl } from 'obsidian';
 import type { CreateBlobCommandOptions } from './helpers';
 import {
   BlobError,
@@ -58,12 +58,13 @@ export async function copy(
     headers['x-cache-control-max-age'] = options.cacheControlMaxAge.toString();
   }
 
-  const blobApiResponse = await fetch(
-    getApiUrl(`/${toPathname}?fromUrl=${fromUrl}`),
-    { method: 'PUT', headers },
-  );
+  const blobApiResponse = await requestUrl({
+    url: getApiUrl(`/${toPathname}?fromUrl=${fromUrl}`),
+    method: 'PUT',
+    headers,
+  });
 
   await validateBlobApiResponse(blobApiResponse);
 
-  return (await blobApiResponse.json()) as CopyBlobResult;
+  return (await blobApiResponse.json) as CopyBlobResult;
 }

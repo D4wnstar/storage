@@ -1,4 +1,4 @@
-import { fetch } from 'undici';
+import { requestUrl } from 'obsidian';
 import type { BlobCommandOptions } from './helpers';
 import {
   getApiUrl,
@@ -87,8 +87,9 @@ export async function list<
     listApiUrl.searchParams.set('mode', options.mode);
   }
 
-  const blobApiResponse = await fetch(listApiUrl, {
+  const blobApiResponse = await requestUrl({
     method: 'GET',
+    url: listApiUrl.toString(),
     headers: {
       ...getApiVersionHeader(),
       authorization: `Bearer ${getTokenFromOptionsOrEnv(options)}`,
@@ -97,7 +98,7 @@ export async function list<
 
   await validateBlobApiResponse(blobApiResponse);
 
-  const results = (await blobApiResponse.json()) as ListBlobApiResponse;
+  const results = (await blobApiResponse.json) as ListBlobApiResponse;
 
   if (options?.mode === 'folded') {
     return {

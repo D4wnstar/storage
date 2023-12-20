@@ -1,6 +1,5 @@
 import type { Readable } from 'node:stream';
-import type { BodyInit } from 'undici';
-import { fetch } from 'undici';
+import { requestUrl } from 'obsidian';
 import type { ClientPutCommandOptions } from './client';
 import type { CreateBlobCommandOptions } from './helpers';
 import {
@@ -103,18 +102,19 @@ export function createPutMethod<
         options.cacheControlMaxAge.toString();
     }
 
-    const blobApiResponse = await fetch(getApiUrl(`/${pathname}`), {
+    const blobApiResponse = await requestUrl({
+      url: getApiUrl(`/${pathname}`),
       method: 'PUT',
-      body: body as BodyInit,
+      body: body as ArrayBuffer | string,
       headers,
       // required in order to stream some body types to Cloudflare
       // currently only supported in Node.js, we may have to feature detect this
-      duplex: 'half',
+      // duplex: 'half',
     });
 
     await validateBlobApiResponse(blobApiResponse);
 
-    const blobResult = (await blobApiResponse.json()) as PutBlobApiResponse;
+    const blobResult = (await blobApiResponse.json) as PutBlobApiResponse;
 
     return blobResult;
   };
